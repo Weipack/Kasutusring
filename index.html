@@ -1,0 +1,1125 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Kasutusring</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link id="fonts" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&amp;family=Golos+Text:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style id="css">
+/* Layout: sticky bar with search and ET/RU switch, shop intro with slogan and delivery strip, category chips, product grid with price tags, prep steps, grades, delivery price list */
+:root{
+  --bg:#ECEFF3; --surface:#FFFFFF; --sunken:#E2E7EC; --ink:#14202A; --muted:#566574; --line:#D2D9E0;
+  --accent:#DF540D; --accent-ink:#FFFFFF; --ok:#1C7A4B; --warn:#9E5E00; --sold:#8995A1; --danger:#BE3328;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0D1216; --surface:#161D23; --sunken:#1F2830; --ink:#E3E9EE; --muted:#93A1AE; --line:#2B3640;
+  --accent:#FF7533; --accent-ink:#1B0C03; --ok:#4FC38B; --warn:#E3A44A; --sold:#5E6B77; --danger:#FF6A5C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D1216; --surface:#161D23; --sunken:#1F2830; --ink:#E3E9EE; --muted:#93A1AE; --line:#2B3640;
+  --accent:#FF7533; --accent-ink:#1B0C03; --ok:#4FC38B; --warn:#E3A44A; --sold:#5E6B77; --danger:#FF6A5C; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+body.has-save{padding-bottom:84px}
+.wrap{max-width:1180px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button{font:inherit}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar-in{display:flex;align-items:center;gap:12px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:700;font-size:15px;color:var(--ink);text-decoration:none;white-space:nowrap;min-width:0}
+.brand span{overflow:hidden;text-overflow:ellipsis}
+.brand svg{flex:none;color:var(--accent)}
+.search{flex:1;min-width:0;display:flex;align-items:center;gap:8px;background:var(--sunken);border:1px solid transparent;border-radius:999px;padding:0 14px;color:var(--muted)}
+.search:focus-within{border-color:var(--accent)}
+.search input{flex:1;min-width:0;border:0;background:transparent;font:inherit;color:var(--ink);padding:9px 0;outline:none}
+@media (max-width:560px){.bar-in{flex-wrap:wrap}.brand{flex:1}.search{order:3;flex-basis:100%}}
+
+.intro{padding-block:34px 18px;display:grid;gap:12px}
+.intro h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,5.4vw,50px);line-height:1.04;letter-spacing:-.02em;margin:0;text-wrap:balance;overflow-wrap:anywhere}
+.tagline{color:var(--muted);max-width:60ch;margin:0;font-size:17px}
+.meta{margin:0;font-family:var(--mono);font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.contacts{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.contact{display:inline-flex;align-items:center;gap:8px;max-width:100%;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px;color:var(--ink);text-decoration:none;font-size:14px}
+.contact.has-btn{padding-right:6px}
+a.contact:hover{border-color:var(--accent)}
+.contact small{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.contact .val{overflow-wrap:anywhere;min-width:0}
+.hint{margin:0;font-size:14px;color:var(--muted);border:1.5px dashed var(--line);border-radius:10px;padding:10px 12px;max-width:60ch}
+
+.owner{display:grid;gap:10px;padding:14px;border:1.5px dashed var(--accent);border-radius:12px;background:color-mix(in srgb,var(--accent) 6%,var(--surface));margin-bottom:14px}
+.owner-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.owner-note{margin:0;font-size:13px;color:var(--muted)}
+.meter{font-family:var(--mono);font-size:12px;white-space:nowrap}
+.pending{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding-block:6px 14px;border-bottom:1px solid var(--line)}
+.chips{display:flex;gap:6px;overflow-x:auto;flex:1 1 320px;min-width:0;scrollbar-width:none;padding-block:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:14px;white-space:nowrap;cursor:pointer}
+.chip:hover{border-color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip .n{font-family:var(--mono);font-size:11.5px;opacity:.6;margin-left:6px}
+.ctrl{display:flex;gap:12px;align-items:center;margin-left:auto}
+.tog{display:inline-flex;gap:6px;align-items:center;font-size:14px;cursor:pointer;white-space:nowrap}
+.tog input{accent-color:var(--accent);width:16px;height:16px;margin:0}
+.ctrl select{font:inherit;font-size:14px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+
+.count{font-size:13px;color:var(--muted);margin:14px 0 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:16px;padding-block:12px 44px}
+@media (max-width:520px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}}
+.card{position:relative;display:flex;flex-direction:column;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;color:inherit;text-decoration:none;transition:transform .15s ease,border-color .15s ease}
+.card:hover{border-color:var(--muted);transform:translateY(-2px)}
+.ph{position:relative;aspect-ratio:4/3;max-width:100%;background:var(--sunken);display:grid;place-items:center;color:var(--muted)}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ph svg{width:36%;height:auto}
+.cond{position:absolute;left:8px;top:8px;font-size:11.5px;font-weight:600;background:var(--surface);color:var(--ink);padding:2px 9px;border-radius:999px;border:1px solid var(--line)}
+.ex{position:absolute;right:8px;top:8px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;background:var(--ink);color:var(--bg);padding:3px 6px;border-radius:4px}
+.editmark{position:absolute;right:8px;bottom:8px;background:var(--accent);color:var(--accent-ink);font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px}
+.body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.sku{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card h3{font-size:15.5px;font-weight:600;line-height:1.3;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.specs{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.price-row{margin-top:auto;padding-top:10px;display:flex;align-items:center;gap:6px 8px;flex-wrap:wrap}
+.tag{position:relative;display:inline-flex;align-items:center;font-family:var(--mono);font-weight:600;font-size:16px;line-height:1.3;background:var(--accent);color:var(--accent-ink);padding:3px 10px 3px 19px;border-radius:2px 6px 6px 2px;clip-path:polygon(9px 0,100% 0,100% 100%,9px 100%,0 50%);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag::before{content:"";position:absolute;left:8px;top:50%;width:5px;height:5px;margin-top:-2.5px;border-radius:50%;background:var(--surface)}
+.old{font-family:var(--mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.st{margin-left:auto;font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.st::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.st-in{color:var(--ok)}.st-reserved{color:var(--warn)}.st-sold{color:var(--sold)}
+.card.sold .ph>*:not(.ex):not(.editmark){filter:grayscale(1);opacity:.55}
+.card.sold .tag{background:var(--sold)}
+.empty{grid-column:1/-1;display:grid;justify-items:start;gap:10px;padding:28px 0;color:var(--muted)}
+.empty p{margin:0;font-size:16px}
+
+.info{padding-block:40px;border-top:1px solid var(--line)}
+.info-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:40px}
+@media (max-width:820px){.info-grid{grid-template-columns:1fr;gap:30px}}
+.info h2{font-family:var(--display);font-weight:500;font-size:18px;margin:0 0 4px}
+.lead{margin:0;color:var(--muted);font-size:14px}
+.scale{list-style:none;padding:0;margin:16px 0 0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+@media (max-width:700px){.scale{grid-template-columns:1fr 1fr}}
+.scale li{display:grid;gap:3px;font-size:13px;color:var(--muted);align-content:start}
+.scale b{color:var(--ink);font-size:14px;font-weight:600}
+.lvl{display:flex;gap:3px;margin-bottom:5px}
+.lvl i{flex:1;height:6px;border-radius:2px;background:var(--line)}
+.lvl i.on{background:var(--ink)}
+.lvl.svc i{background:repeating-linear-gradient(135deg,var(--accent) 0 3px,transparent 3px 6px)}
+.ticks{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:10px;font-size:14.5px}
+.ticks li{display:flex;gap:10px}
+.ticks li::before{content:"✓";color:var(--accent);font-weight:700;flex:none}
+.foot{padding-block:18px 40px;color:var(--muted);font-size:13px;display:flex;flex-wrap:wrap;gap:6px 18px;border-top:1px solid var(--line)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600;font-size:14px;line-height:1.2;padding:9px 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.small{padding:7px 12px;font-size:13px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.ink{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.btn.danger-ghost{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 40%,var(--line))}
+.btn.danger{background:var(--danger);border-color:var(--danger);color:var(--surface)}
+.btn.ghost-inv{background:transparent;color:var(--bg);border-color:color-mix(in srgb,var(--bg) 45%,transparent)}
+.mini{font-size:12.5px;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 10px;cursor:pointer;white-space:nowrap}
+.mini:hover{border-color:var(--muted)}
+
+dialog{border:0;padding:0;background:var(--surface);color:var(--ink);border-radius:14px;width:min(940px,calc(100vw - 20px));max-height:calc(100dvh - 20px);box-shadow:0 30px 80px rgb(0 0 0 / .35);overflow:hidden}
+dialog.narrow{width:min(640px,calc(100vw - 20px))}
+dialog::backdrop{background:rgb(8 12 16 / .58)}
+.dlg{display:flex;flex-direction:column;max-height:calc(100dvh - 20px)}
+.dlg-head{display:flex;align-items:center;gap:12px;padding:12px 14px 12px 20px;border-bottom:1px solid var(--line)}
+.dlg-head h2{font-family:var(--display);font-size:17px;font-weight:500;margin:0;flex:1}
+.dlg-head .sku{flex:1}
+.x{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:20px;line-height:1;cursor:pointer}
+.dlg-body{overflow:auto;min-height:0}
+.dlg-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 20px;padding-bottom:max(12px,env(safe-area-inset-bottom,0px));border-top:1px solid var(--line)}
+.sp{flex:1}
+
+.pv{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:28px;padding:20px}
+@media (max-width:760px){.pv{grid-template-columns:1fr;gap:18px;padding:16px}}
+.gal-main{aspect-ratio:1;max-width:100%;border-radius:12px;background:var(--sunken);display:grid;place-items:center;overflow:hidden;color:var(--muted)}
+.gal-main img{width:100%;height:100%;object-fit:contain}
+.gal-main svg{width:38%;height:auto}
+.thumbs{display:flex;gap:8px;margin-top:10px;overflow-x:auto;padding-bottom:2px}
+.thumbs button{flex:none;width:60px;height:60px;padding:0;border-radius:8px;overflow:hidden;border:2px solid transparent;background:var(--sunken);cursor:pointer}
+.thumbs button[aria-current="true"]{border-color:var(--accent)}
+.thumbs img{width:100%;height:100%;object-fit:cover;display:block}
+.pinfo{display:flex;flex-direction:column;gap:14px;min-width:0}
+.ptitle{font-family:var(--display);font-weight:500;font-size:clamp(20px,3vw,26px);line-height:1.2;margin:0;text-wrap:balance;overflow-wrap:anywhere}
+.price-row.big{padding-top:0;margin-top:0}
+.price-row.big .tag{font-size:22px;padding:5px 14px 5px 23px}
+.price-row.big .tag::before{left:10px}
+.price-row.big .st{margin-left:4px;font-size:13.5px}
+.condbox{display:grid;gap:2px;font-size:14px;color:var(--muted);border-left:3px solid var(--ink);padding-left:10px}
+.condbox b{color:var(--ink);font-weight:600}
+.spec{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);margin:0;font-size:14px}
+.spec dt,.spec dd{margin:0;padding:7px 0;border-bottom:1px dashed var(--line);overflow-wrap:anywhere}
+.spec dt{color:var(--muted);padding-right:12px}
+.spec dd.full{grid-column:1/-1}
+.desc{margin:0;font-size:15px;overflow-wrap:anywhere}
+.exnote{margin:0;font-size:13px;background:var(--sunken);padding:8px 10px;border-radius:8px;color:var(--muted)}
+.buy{background:var(--sunken);border-radius:12px;padding:16px;display:grid;gap:10px}
+.buy h3{margin:0;font-size:15px;font-weight:600}
+.buy p{margin:0;font-size:14px;color:var(--muted)}
+.buy-btns{display:flex;flex-wrap:wrap;gap:8px}
+.msg{display:flex;gap:8px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px;font-size:13.5px}
+.msg .sel{flex:1;min-width:0;user-select:all;-webkit-user-select:all;overflow-wrap:anywhere}
+
+.form{display:grid;gap:14px;padding:20px}
+.row3{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.f{display:grid;gap:5px;font-size:13px;color:var(--muted);min-width:0}
+.f > span{font-weight:500}
+.f small{font-weight:400;opacity:.85}
+.form input[type="text"],.form input[type="number"],.form input[type="url"],.form input[type="email"],.form input[type="tel"],.form select,.form textarea{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px;width:100%;min-width:0}
+.form textarea{resize:vertical;line-height:1.45}
+.form input:focus,.form select:focus,.form textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+.legend{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:6px 0 -4px;border-top:1px solid var(--line);padding-top:14px}
+.photos{display:flex;flex-wrap:wrap;gap:8px}
+.pt{position:relative;width:88px;height:88px;border-radius:8px;overflow:hidden;background:var(--sunken)}
+.pt img{width:100%;height:100%;object-fit:cover;display:block}
+.pt-act{position:absolute;inset:auto 0 0 0;display:flex;justify-content:space-between;align-items:center;padding:3px;background:linear-gradient(transparent,rgb(0 0 0 / .65))}
+.pt-act button{width:26px;height:26px;border-radius:6px;border:0;background:rgb(255 255 255 / .94);color:#111;cursor:pointer;font-size:14px;line-height:1}
+.cover{font-size:10px;color:#fff;padding-left:4px;font-weight:600}
+.drop{position:relative;display:flex;align-items:center;justify-content:center;border:1.5px dashed var(--line);border-radius:10px;padding:16px;color:var(--muted);cursor:pointer;text-align:center;font-size:14px}
+.drop:hover,.drop.over{border-color:var(--accent);color:var(--ink)}
+.drop:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.drop input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.err{margin:0;color:var(--danger);font-size:14px;font-weight:500}
+
+.eyebrow{margin:0;font-family:var(--mono);font-size:12.5px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--accent)}
+.meta a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.cond.g-nd{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.facts{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.fact{font-size:11.5px;line-height:1.5;padding:1px 7px;border-radius:4px;background:var(--sunken);color:var(--muted);white-space:nowrap}
+.fact.ok{color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--surface))}
+.pinfo .fact{font-size:13px;padding:3px 9px}
+.newp{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.savebox{margin:0;font-size:14px;padding:9px 12px;border-radius:8px;background:color-mix(in srgb,var(--ok) 11%,var(--surface))}
+.condbox a{color:var(--muted);font-size:13px;text-underline-offset:3px}
+.checkbox-list h3,.defects h3{margin:0 0 6px;font-size:14px;font-weight:600}
+.checkbox-list .ticks{margin:0;gap:6px;font-size:14px}
+.defects{border:1px solid color-mix(in srgb,var(--warn) 45%,var(--line));background:color-mix(in srgb,var(--warn) 8%,var(--surface));border-radius:8px;padding:10px 12px}
+.defects p{margin:0;font-size:14px}
+.checks-edit{border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px 16px;margin:0}
+.checks-edit legend{padding:0 4px;font-weight:500}
+.checks-edit .tog{color:var(--ink)}
+.steps-wrap{margin-bottom:36px}
+.steps{list-style:none;padding:0;margin:14px 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.steps li{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;font-size:14.5px}
+.num{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-weight:600;font-size:13px;background:var(--ink);color:var(--bg)}
+#grades{scroll-margin-top:90px}
+#savebar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--ink);color:var(--bg);padding-top:12px;padding-bottom:max(12px,env(safe-area-inset-bottom,0px));box-shadow:0 -8px 30px rgb(0 0 0 / .18)}
+.sb-in{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;pointer-events:none;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;z-index:40;width:max-content;max-width:calc(100vw - 32px);display:grid;gap:6px;transition:opacity .2s,transform .2s}
+#toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+body.has-save #toast{bottom:92px}
+#toast input{font:inherit;font-size:13px;width:100%;padding:6px 8px;border-radius:6px;border:0;background:var(--bg);color:var(--ink)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.lang{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:2px;background:var(--surface);flex:none}
+.lang button{border:0;background:transparent;color:var(--muted);font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.06em;padding:5px 9px;border-radius:999px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+@media (max-width:560px){.lang{order:2}}
+.slogan{margin:0;font-family:var(--display);font-weight:500;font-size:clamp(18px,2.6vw,26px);line-height:1.25;color:var(--accent);text-wrap:balance;max-width:28ch}
+.svc-strip{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;margin-top:6px;padding:10px 14px;border-radius:10px;background:var(--surface);border:1px solid var(--line);color:var(--muted);text-decoration:none;font-size:14px;width:fit-content;max-width:100%}
+.svc-strip:hover{border-color:var(--muted)}
+.svc-strip b{color:var(--ink);font-weight:500}
+.svc-strip span{font-variant-numeric:tabular-nums}
+.side-col{display:grid;gap:28px;align-content:start}
+.pricelist{display:grid;grid-template-columns:minmax(0,1fr) auto;margin:12px 0 0;font-size:14.5px}
+.pricelist dt,.pricelist dd{margin:0;padding:8px 0;border-bottom:1px dashed var(--line)}
+.pricelist dd{font-family:var(--mono);font-weight:600;text-align:right;padding-left:12px;font-variant-numeric:tabular-nums;white-space:nowrap}
+#services{scroll-margin-top:90px}
+.svc-line{font-size:13px!important}
+dialog.wide{width:min(860px,calc(100vw - 20px))}
+.bi{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:620px){.bi{grid-template-columns:1fr}}
+.lc{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--accent);font-weight:600}
+.trbar{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:8px;background:var(--sunken);font-size:13px;color:var(--muted)}
+.svc-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 90px 36px;gap:10px;align-items:end;margin-bottom:10px}
+@media (max-width:620px){.svc-row{grid-template-columns:minmax(0,1fr) 90px 36px}.svc-row .f:first-child{grid-column:1/-1}}
+.legend small{text-transform:none;letter-spacing:0;font-family:var(--body)}
+.terms{padding:8px 24px 28px;font-size:15px;max-width:72ch}
+.terms h3{font-family:var(--display);font-weight:500;font-size:16px;margin:22px 0 6px}
+.terms p{margin:0 0 8px}
+.terms ul{margin:0 0 8px;padding-left:20px}
+.terms .pricelist{margin:4px 0 10px;max-width:420px}
+.svc-line a,.foot a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+</style>
+<div id="root"></div>
+<script type="application/json" id="store">{"rev":2,"updated":"2026-10-27","nextId":14,"shop":{"name":"Kasutusring","kicker":{"et":"Kasutatud kodutehnika ja tööriistad","ru":"Б/у бытовая техника и инструменты"},"slogan":{"et":"Anna kasutatud tehnikale teine võimalus","ru":"Дайте б/у технике второй шанс"},"tagline":{"et":"Iga seade on enne müüki kõigis režiimides kontrollitud ja pildistatud nii, nagu see on, koos puudustega.","ru":"Каждое устройство перед продажей проверено во всех режимах и сфотографировано как есть, вместе с недостатками."},"city":"Tartu","messenger":"https://www.facebook.com/profile.php?id=61550314520977","telegram":"@AworoDr","whatsapp":"","phone":"+372 5845 1790","email":"","marketName":"","marketUrl":"","siteUrl":"","currency":"EUR","services":[{"et":"Kohaletoimetamine Tartus","ru":"Доставка по Тарту","price":10},{"et":"Kohaletoimetamine Tartumaal","ru":"Доставка по Тартумаа","price":35},{"et":"Vana tehnika äravedu","ru":"Вывоз старой техники","price":""}],"steps":{"et":["Kontrollime seadet kõigis režiimides","Puhastame ja eemaldame lõhnad","Pildistame nii, nagu on, koos kriimustustega"],"ru":["Проверяем технику во всех режимах","Чистим и убираем запахи","Фотографируем как есть, вместе с царапинами"]},"info":{"et":["Tehnikat saab enne ostu kohapeal vaadata","Poe lisagarantiid ei anna, kuid probleemi korral leiame alati lahenduse","Küsimustega kirjuta Messengeris, Telegramis või helista"],"ru":["Технику можно посмотреть вживую перед покупкой","Дополнительной гарантии магазина нет, но если возникнет проблема, мы всегда найдём решение","С вопросами пишите в Messenger, Telegram или звоните"]},"legalName":"","regCode":"","address":"","terms":{"et":"## Müüja\n{seller}\n## Kaup\nMüüme kasutatud kodutehnikat ja tööriistu. Iga toote seisukord on kirjeldatud hinde, fotode ja tootekirjeldusega. Kirjeldatud kriimustused ja muud puudused on hinnas arvestatud.\n## Tellimine ja tasumine\nOstu lepime kokku Messengeris, Telegramis või telefoni teel. Tasumisviis ja üleandmise aeg lepitakse kokku ostu kinnitamisel.\n## Kohaletoimetamine ja vana tehnika äravedu\n{services}\nPalun vaata seade üleandmisel üle ja kontrolli seda.\n## Garantii ja pretensioonid\nKasutatud tehnikale poe lisagarantiid ei anta. See ei piira ostja seadusest tulenevat õigust esitada pretensioon. Kui seadmel ilmneb puudus, mida tootekirjelduses ei olnud, võta meiega ühendust 2 kuu jooksul pärast puuduse avastamist ja leiame lahenduse: parandus, asendus või raha tagastamine.\n## Lepingust taganemine\nKui ost lepiti kokku sidevahendi abil (nt Messengeris või telefoni teel) ja sa ei näinud seadet enne ostu, võid lepingust taganeda 14 päeva jooksul alates seadme kättesaamisest ilma põhjust esitamata. Tagastamise kulud kannab ostja. Raha tagastame 14 päeva jooksul pärast taganemisavalduse saamist.\nKui vaatasid seadme üle ja ostsid selle kohapeal, taganemisõigus ei kehti.","ru":"## Продавец\n{seller}\n## Товар\nМы продаём б/у бытовую технику и инструменты. Состояние каждого товара описано оценкой, фотографиями и описанием. Указанные царапины и другие недостатки учтены в цене.\n## Заказ и оплата\nО покупке договариваемся в Messenger, Telegram или по телефону. Способ оплаты и время передачи согласуем при подтверждении покупки.\n## Доставка и вывоз старой техники\n{services}\nПожалуйста, осмотрите и проверьте устройство при получении.\n## Гарантия и претензии\nДополнительной гарантии магазина на б/у технику нет. Это не ограничивает право покупателя предъявить претензию по закону. Если у устройства обнаружится недостаток, которого не было в описании, свяжитесь с нами в течение 2 месяцев после его обнаружения, и мы найдём решение: ремонт, замена или возврат денег.\n## Отказ от покупки\nЕсли покупка согласована дистанционно (например, в Messenger или по телефону) и вы не видели устройство до покупки, вы можете отказаться от договора в течение 14 дней с момента получения без объяснения причин. Расходы на возврат несёт покупатель. Деньги вернём в течение 14 дней после получения заявления об отказе.\nЕсли вы осмотрели и купили устройство на месте, право на отказ не действует."}},"products":[]}</script>
+<script id="app">
+(function(){
+'use strict';
+var STORE = JSON.parse(document.getElementById('store').textContent);
+var state = clone(STORE);
+var PKEY = 'vitrina-pending';
+var RESET = ':root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}img{max-width:100%}[hidden]{display:none!important}';
+
+/* ---------- language ---------- */
+var lang = 'et';
+try { var sl = localStorage.getItem('tr-lang'); if (sl==='et' || sl==='ru') lang = sl; } catch(e){}
+var hm = location.hash.match(/(?:^#|-)(et|ru)$/); if (hm) lang = hm[1];
+
+var T = {
+  et: {
+    search:'Mudel, kaubamärk, tootekood', all:'Kõik', stock:'Ainult laos', sortNew:'Uuemad enne', sortAsc:'Odavamad enne', sortDesc:'Kallimad enne',
+    onSale:'müügis', gradesLink:'mida seisukorra hinded tähendavad', shown:'Näidatud', of:'/',
+    nothing:'Midagi ei leitud', forQuery:' päringule', reset:'Tühjenda filtrid', soon:'Peagi lisandub siia tooteid.',
+    sku:'kood', in:'Laos', reserved:'Broneeritud', sold:'Müüdud', checked:'✓ Kontrollitud', warranty:'Garantii', months:'kuud', year:'a',
+    newApprox:'uus ≈', saveA:'Sama uus seade maksab umbes ', saveB:'. Säästad ', example:'See on näidistoode. Peagi on siin päris tooted.',
+    allGrades:'Kõik seisukorra hinded', checksH:'Enne müüki kontrollitud', defectsH:'Mida peaks teadma',
+    soldH:'See toode on juba müüdud', soldP:'Vaata sarnaseid kategoorias ', soldBtn:'Vaata kategooriat',
+    reservedH:'Toode on broneeritud, aga võid end järjekorda panna', buyH:'Soovid osta või küsida?',
+    wa:'Kirjuta WhatsAppis', tg:'Kirjuta Telegramis', fb:'Kirjuta Messengeris', svcH:'Kohaletoimetamine ja teenused', agreed:'kokkuleppel', delivery:'Kohaletoimetamine', noContacts:'Kirjuta müüjale seal, kust selle lingi said, ja kleebi allolev tekst.', msgHint:'Nupule vajutades kopeeritakse sõnum automaatselt, kleebi see lihtsalt vestlusesse.',
+    copy:'Kopeeri', copied:'Kopeeritud', msgCopied:'Tekst kopeeritud, kleebi see vestlusesse', manual:'Kopeeri käsitsi:',
+    link:'Toote link', linkCopied:'Toote link kopeeritud', close:'Sulge',
+    phone:'Telefon', email:'E-post', market:'Turuplats', profile:'minu profiil',
+    stepsH:'Kuidas tehnika vitriinile jõuab', gradesH:'Seisukorra hinded',
+    gradesLead:'Kogu siinne tehnika on kasutatud, välja arvatud allahinnatud uued seadmed. Hinne näitab, kuidas seade välja näeb; korralikult töötab iga seade.',
+    termsH:'Tingimused', termsLink:'Müügitingimused', agree:'Ostes nõustud ', agreeLink:'müügitingimustega', regCode:'Registrikood', prices:'Hinnad on', updated:'Kataloog uuendatud', qty:'tk',
+    ask:function(p){ return 'Tere! Mind huvitab '+tr(p.title)+' (kood '+p.id+') hinnaga '+money(p.price)+'. Kas see on veel saadaval?'; },
+    count:function(n){ return n===1 ? '1 toode' : n+' toodet'; }
+  },
+  ru: {
+    search:'Модель, бренд, артикул', all:'Все', stock:'Только в наличии', sortNew:'Сначала новые', sortAsc:'Сначала дешевле', sortDesc:'Сначала дороже',
+    onSale:'в продаже', gradesLink:'что значат оценки состояния', shown:'Показано', of:'из',
+    nothing:'Ничего не нашлось', forQuery:' по запросу', reset:'Сбросить фильтры', soon:'Скоро здесь появятся товары.',
+    sku:'арт.', in:'В наличии', reserved:'Забронирован', sold:'Продан', checked:'✓ Проверено', warranty:'Гарантия', months:'мес', year:'г.',
+    newApprox:'новый ≈', saveA:'Такой же новый стоит около ', saveB:'. Экономия ', example:'Это пример товара. Скоро здесь будут настоящие позиции.',
+    allGrades:'Все оценки состояния', checksH:'Проверено перед продажей', defectsH:'Что стоит знать',
+    soldH:'Этот товар уже продан', soldP:'Посмотрите похожие в категории ', soldBtn:'Смотреть категорию',
+    reservedH:'Товар забронирован. Можно встать в очередь', buyH:'Хотите купить или задать вопрос?',
+    wa:'Написать в WhatsApp', tg:'Написать в Telegram', fb:'Написать в Messenger', svcH:'Доставка и услуги', agreed:'по договорённости', delivery:'Доставка', noContacts:'Напишите продавцу там, где вы получили эту ссылку, и вставьте текст ниже.', msgHint:'При нажатии кнопки сообщение скопируется само, просто вставьте его в чат.',
+    copy:'Копировать', copied:'Скопировано', msgCopied:'Текст скопирован, вставьте его в чат', manual:'Скопируйте вручную:',
+    link:'Ссылка на товар', linkCopied:'Ссылка на товар скопирована', close:'Закрыть',
+    phone:'Телефон', email:'E-mail', market:'Маркетплейс', profile:'мой профиль',
+    stepsH:'Как техника попадает на витрину', gradesH:'Оценки состояния',
+    gradesLead:'Вся техника здесь б/у, кроме уценённой новой. Оценка показывает, как устройство выглядит; работает исправно каждое.',
+    termsH:'Условия', termsLink:'Условия продажи', agree:'Покупая, вы соглашаетесь с ', agreeLink:'условиями продажи', regCode:'Рег. код', prices:'Цены указаны в', updated:'Каталог обновлён', qty:'шт.',
+    ask:function(p){ return 'Здравствуйте! Интересует '+tr(p.title)+' (арт. '+p.id+') за '+money(p.price)+'. Ещё в наличии?'; },
+    count:function(n){ return n+' '+plural(n,'товар','товара','товаров'); }
+  }
+};
+function t(k){ return T[lang][k]; }
+var CURNAME = {
+  et:{EUR:'eurodes',USD:'USA dollarites',RUB:'rublades',PLN:'zlottides'},
+  ru:{EUR:'евро',USD:'долларах США',RUB:'рублях',PLN:'злотых'}
+};
+
+/* grade: key, level, et[label, desc, chip], ru[label, desc, chip] */
+var CONDS = [
+  ['a1',4,['Nagu uus','Kasutatud, kuid kasutusjälgi peaaegu pole','Kasutatud · nagu uus'],['Как новый','Б/у, но следов использования почти нет','Б/у · как новый']],
+  ['a',3,['Väga hea','Väikesed jäljed, märgatavad ainult lähedalt','Kasutatud · väga hea'],['Отличное','Мелкие следы, заметные только вблизи','Б/у · отличное']],
+  ['b',2,['Hea','Näha on kriimustusi või kulumist, töötab korralikult','Kasutatud · hea'],['Хорошее','Видны царапины или потёртости, работает исправно','Б/у · хорошее']],
+  ['c',1,['Töökorras','Märgatavad kosmeetilised vead, kõik töötab','Kasutatud · töökorras'],['Рабочее','Заметные косметические дефекты, вся техника исправна','Б/у · рабочее']],
+  ['nd',0,['Uus, allahinnatud','Kasutamata: näidis või kahjustatud pakend','Uus · allahinnatud'],['Новый, уценка','Не использовался: витринный образец или повреждена упаковка','Новый · уценка']]
+];
+function condOf(k){ for (var i=0;i<CONDS.length;i++) if (CONDS[i][0]===k) return CONDS[i]; return null; }
+function condTxt(c, l){ return c[(l||lang)==='ru' ? 3 : 2]; }
+var CHECKS = [
+  ['tested','Kõik režiimid kontrollitud','Проверены все режимы'],
+  ['clean','Puhastatud','Почищено'],
+  ['odor','Kõrvaliste lõhnadeta','Без посторонних запахов'],
+  ['noleak','Lekkeid pole','Без протечек'],
+  ['complete','Täielik komplekt','Полный комплект'],
+  ['docs','Dokumendid või tšekk olemas','Есть документы или чек']
+];
+function checkName(k, l){ for (var i=0;i<CHECKS.length;i++) if (CHECKS[i][0]===k) return CHECKS[i][(l||lang)==='ru'?2:1]; return ''; }
+
+var ui = {q:'', cat:'all', sort:'new', stock:false};
+var canEdit = false, editing = false, dirty = false, saving = false, art = null, samp = null;
+var draft = null, pending = null, discardArmed = false, busyPhotos = 0;
+
+function $(s, r){ return (r||document).querySelector(s); }
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function plural(n,a,b,c){ var m=n%10, h=n%100; if(m===1&&h!==11) return a; if(m>=2&&m<=4&&(h<12||h>14)) return b; return c; }
+function tr(v){ if (v == null) return ''; if (typeof v !== 'object') return String(v); return v[lang] || v.et || v.ru || ''; }
+function side(v, l){ if (v == null) return ''; if (typeof v !== 'object') return String(v); return v[l] || ''; }
+function trList(v){ if (Array.isArray(v)) return v; if (!v) return []; var a = v[lang]; if (a && a.length) return a; return (v.et && v.et.length) ? v.et : (v.ru || []); }
+function sideList(v, l){ if (Array.isArray(v)) return v; if (!v) return []; return v[l] || []; }
+function money(v){
+  if (v === '' || v == null || isNaN(v)) return '';
+  try { return new Intl.NumberFormat(lang==='ru'?'ru-RU':'et-EE',{style:'currency',currency:state.shop.currency||'EUR',maximumFractionDigits:0}).format(v); }
+  catch(e){ return v + ' ' + (state.shop.currency||''); }
+}
+function find(id){ for (var i=0;i<state.products.length;i++) if (state.products[i].id===id) return state.products[i]; return null; }
+function catKey(p){ return side(p.cat,'et') || side(p.cat,'ru') || 'Muu'; }
+function cats(){
+  var m = new Map();
+  state.products.forEach(function(p){
+    var k = catKey(p), e = m.get(k);
+    if (e) e.n++; else m.set(k, {key:k, label:tr(p.cat) || (lang==='ru'?'Другое':'Muu'), n:1, et:side(p.cat,'et'), ru:side(p.cat,'ru')});
+  });
+  return Array.from(m.values());
+}
+function digits(s){ return String(s||'').replace(/\D/g,''); }
+function normTg(s){
+  s = String(s||'').trim().replace(/^https?:\/\/(www\.)?(t|telegram)\.me\//i,'').replace(/^@/,'').replace(/\/.*$/,'');
+  return /^[A-Za-z0-9_]{3,}$/.test(s) ? s : '';
+}
+function normFb(s){
+  s = String(s||'').trim(); if (!s) return '';
+  var idm = s.match(/profile\.php\?(?:[^#]*&)?id=(\d+)/i); if (idm) return idm[1];
+  s = s.replace(/^(https?:\/\/)?(www\.|m\.)?(facebook\.com|fb\.com|m\.me|messenger\.com\/t)\//i,'').replace(/^@/,'').split(/[\/?#]/)[0];
+  return /^[A-Za-z0-9.\-_]{3,}$/.test(s) ? s : '';
+}
+function svcPrice(sv){ return (sv.price === '' || sv.price == null || isNaN(sv.price)) ? t('agreed') : money(sv.price); }
+function services(){ return (state.shop.services||[]).filter(function(x){ return tr(x); }); }
+function okUrl(s){ return /^https:\/\/[^\s]+$/i.test(String(s||'')); }
+function savings(p){ var n = Number(p.newPrice), c = Number(p.price); return (n>c && c>=0) ? {diff:n-c, pct:Math.round((1-c/n)*100)} : null; }
+function siteBase(){ return okUrl(state.shop.siteUrl) ? state.shop.siteUrl.replace(/#.*$/,'') : ''; }
+
+/* ---------- icons ---------- */
+var IC = {
+  fridge:'<rect x="17" y="5" width="30" height="54" rx="4"/><path d="M17 24h30M22 12v6M22 30v9"/>',
+  washer:'<rect x="12" y="6" width="40" height="52" rx="4"/><path d="M12 16h40M38 11h8"/><circle cx="19" cy="11" r="1.3"/><circle cx="32" cy="37" r="12"/><path d="M25 39a8 8 0 0 0 14 0"/>',
+  dishwasher:'<rect x="12" y="6" width="40" height="52" rx="4"/><path d="M12 16h40M19 11h12M24 30h16"/><circle cx="44" cy="11" r="1.3"/>',
+  stove:'<rect x="10" y="7" width="44" height="50" rx="3"/><path d="M10 21h44"/><circle cx="18" cy="14" r="1.4"/><circle cx="25" cy="14" r="1.4"/><circle cx="32" cy="14" r="1.4"/><rect x="17" y="29" width="30" height="20" rx="2"/><path d="M22 34h20"/>',
+  vacuum:'<path d="M40 5h7M43.5 5v14"/><rect x="36" y="19" width="15" height="17" rx="5"/><path d="M39 35L20 54"/><path d="M11 56h18"/>',
+  microwave:'<rect x="6" y="14" width="52" height="36" rx="3"/><rect x="12" y="20" width="30" height="24" rx="2"/><path d="M50 21v5M50 32v2M50 38v2"/>',
+  tool:'<path d="M8 16h28l4 4h12v6H40l-4 4H24l-4 26H10l4-26H8z"/><path d="M14 22h16"/>',
+  box:'<path d="M10 20l22-10 22 10v26L32 56 10 46z"/><path d="M10 20l22 10 22-10M32 30v26"/>'
+};
+function iconKey(p){
+  var t = [side(p.cat,'et'), side(p.cat,'ru'), side(p.title,'et'), side(p.title,'ru')].join(' | ').toLowerCase();
+  var tests = [
+    ['dishwasher',/посудомо|nõudepes/], ['fridge',/холодил|морозил|külmik|külmkapp|sügavkül|fridge/],
+    ['washer',/стирал|сушил|pesumasin|kuivati|washer/], ['vacuum',/пылесос|tolmuime|vacuum|dyson/],
+    ['stove',/плит|духов|варочн|pliit|praeahi|ahi\b|ahjud|oven/], ['microwave',/микровол|mikrolain|мелкая|väike kodu|блендер|чайник|кофе/],
+    ['tool',/инструм|дрел|шуруп|перфорат|пила|болгар|tööriist|trell|makita|dewalt|hilti|perforaator/]
+  ];
+  for (var i=0;i<tests.length;i++) if (tests[i][1].test(t)) return tests[i][0];
+  return 'box';
+}
+function icon(p){ return '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+IC[iconKey(p)]+'</svg>'; }
+var MARK = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v4.5h-4.5"/></svg>';
+
+/* ---------- contacts ---------- */
+function contactList(){
+  var s = state.shop, out = [];
+  var fb = normFb(s.messenger); if (fb) out.push({k:'fb',label:'Messenger',value:(/^\d+$/.test(fb) ? (s.name||'Facebook') : fb),href:'https://m.me/'+fb});
+  var tg = normTg(s.telegram); if (tg) out.push({k:'tg',label:'Telegram',value:'@'+tg,href:'https://t.me/'+tg});
+  var wa = digits(s.whatsapp); if (wa.length>=7) out.push({k:'wa',label:'WhatsApp',value:s.whatsapp,href:'https://wa.me/'+wa,num:wa});
+  if (s.phone) out.push({k:'ph',label:t('phone'),value:s.phone,copy:true});
+  if (s.email) out.push({k:'em',label:t('email'),value:s.email,copy:true});
+  if (okUrl(s.marketUrl)) out.push({k:'mk',label:s.marketName||t('market'),value:t('profile'),href:s.marketUrl});
+  return out;
+}
+function contactChip(c){
+  if (c.href) return '<a class="contact" href="'+esc(c.href)+'" target="_blank" rel="noopener"><small>'+esc(c.label)+'</small><span class="val">'+esc(c.value)+'</span></a>';
+  return '<span class="contact has-btn"><small>'+esc(c.label)+'</small><span class="val">'+esc(c.value)+'</span><button type="button" class="mini" data-copy="'+esc(c.value)+'">'+t('copy')+'</button></span>';
+}
+function contactsHTML(){
+  var cl = contactList();
+  if (!cl.length) return editing ? '<p class="hint">Добавьте Messenger, Telegram или телефон в «Настройках магазина», чтобы покупатели могли вам написать.</p>' : '';
+  return '<div class="contacts">'+cl.map(contactChip).join('')+'</div>';
+}
+
+/* ---------- shell ---------- */
+function buildShell(){
+  $('#root').innerHTML =
+  '<header class="bar"><div class="wrap bar-in">'+
+    '<a class="brand" href="#">'+MARK+'<span id="brandName"></span></a>'+
+    '<label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>'+
+    '<input id="q" type="search" autocomplete="off"></label>'+
+    '<div class="lang" role="group" aria-label="Keel / Язык"><button type="button" data-lang="et">ET</button><button type="button" data-lang="ru">RU</button></div>'+
+    '<button id="editToggle" type="button" class="btn ink small" hidden>Редактировать</button>'+
+  '</div></header>'+
+  '<section class="wrap intro" id="intro"></section>'+
+  '<div class="wrap" id="ownerWrap" hidden><div class="owner" id="owner"></div></div>'+
+  '<div class="wrap"><div class="filters"><div class="chips" id="chips" role="group"></div>'+
+    '<div class="ctrl"><label class="tog"><input type="checkbox" id="stock"> <span id="stockLbl"></span></label>'+
+    '<select id="sort"><option value="new"></option><option value="asc"></option><option value="desc"></option></select></div>'+
+  '</div></div>'+
+  '<main class="wrap"><p class="count" id="count"></p><div class="grid" id="grid"></div></main>'+
+  '<section class="wrap info" id="info"></section>'+
+  '<footer class="wrap foot" id="foot"></footer>'+
+  '<dialog id="pd"></dialog><dialog id="td" class="wide"></dialog><dialog id="ed" class="wide" aria-label="Редактор товара"></dialog><dialog id="sd" class="wide" aria-label="Настройки магазина"></dialog>'+
+  '<div id="savebar" hidden></div><div id="toast" role="status" aria-live="polite"></div>';
+}
+
+function renderAll(){ renderShell(); renderGrid(); renderSavebar(); }
+
+function renderShell(){
+  var s = state.shop;
+  document.documentElement.lang = lang;
+  document.title = s.name || 'Kasutusring';
+  $('#brandName').textContent = s.name || 'Kasutusring';
+  Array.prototype.forEach.call(document.querySelectorAll('[data-lang]'), function(b){ b.setAttribute('aria-pressed', String(b.dataset.lang===lang)); });
+  $('#q').placeholder = t('search'); $('#q').setAttribute('aria-label', t('search'));
+  $('#stockLbl').textContent = t('stock');
+  var so = $('#sort').options; so[0].text = t('sortNew'); so[1].text = t('sortAsc'); so[2].text = t('sortDesc');
+  $('#pd').setAttribute('aria-label', lang==='ru' ? 'Товар' : 'Toode');
+  var live = state.products.filter(function(p){ return p.status!=='sold'; }).length;
+  var kicker = tr(s.kicker), slogan = tr(s.slogan), tagline = tr(s.tagline);
+  $('#intro').innerHTML =
+    (kicker || s.city ? '<p class="eyebrow">'+esc(kicker)+(kicker && s.city ? ' · ' : '')+esc(s.city||'')+'</p>' : '')+
+    '<h1>'+esc(s.name||'Kasutusring')+'</h1>'+
+    (slogan ? '<p class="slogan">'+esc(slogan)+'</p>' : '')+
+    (tagline ? '<p class="tagline">'+esc(tagline)+'</p>' : '')+
+    '<p class="meta">'+t('count')(live)+' '+t('onSale')+' · <a href="#grades" data-go="grades">'+t('gradesLink')+'</a></p>'+
+    contactsHTML()+svcStrip();
+  renderFilters(); renderOwner(); renderInfo();
+}
+
+function svcStrip(){
+  var sv = services(); if (!sv.length) return '';
+  return '<a class="svc-strip" href="#services" data-go="services">'+sv.map(function(x){ return '<span><b>'+esc(tr(x))+'</b> '+esc(svcPrice(x))+'</span>'; }).join('')+'</a>';
+}
+function renderFilters(){
+  var cs = cats(), total = state.products.length;
+  if (ui.cat!=='all' && !cs.some(function(c){ return c.key===ui.cat; })) ui.cat = 'all';
+  $('#chips').setAttribute('aria-label', lang==='ru' ? 'Категории' : 'Kategooriad');
+  var list = [{key:'all',label:t('all'),n:total}].concat(cs);
+  $('#chips').innerHTML = list.map(function(c){
+    return '<button type="button" class="chip" data-cat="'+esc(c.key)+'" aria-pressed="'+(ui.cat===c.key)+'">'+esc(c.label)+'<span class="n">'+c.n+'</span></button>';
+  }).join('');
+}
+
+function visible(){
+  var q = ui.q.trim().toLowerCase();
+  var words = q ? q.split(/\s+/) : [];
+  var list = state.products.filter(function(p){
+    if (ui.cat!=='all' && catKey(p)!==ui.cat) return false;
+    if (ui.stock && p.status==='sold') return false;
+    if (words.length){
+      var hay = [side(p.title,'et'),side(p.title,'ru'),side(p.cat,'et'),side(p.cat,'ru'),p.id,p.year,side(p.desc,'et'),side(p.desc,'ru'),
+        sideList(p.specs,'et').concat(sideList(p.specs,'ru')).map(function(s){ return s.join(' '); }).join(' ')].join(' ').toLowerCase();
+      return words.every(function(w){ return hay.indexOf(w)>=0; });
+    }
+    return true;
+  });
+  function rank(p){ return p.status==='sold' ? 1 : 0; }
+  list.sort(function(a,b){
+    return rank(a)-rank(b) || (ui.sort==='asc' ? a.price-b.price : ui.sort==='desc' ? b.price-a.price : b.id.localeCompare(a.id));
+  });
+  return list;
+}
+
+function factsHTML(p){
+  var f = [];
+  if (p.checks && p.checks.indexOf('tested')>=0) f.push('<span class="fact ok">'+t('checked')+'</span>');
+  if (Number(p.warranty)>0) f.push('<span class="fact">'+t('warranty')+' '+Number(p.warranty)+' '+t('months')+'</span>');
+  if (p.year) f.push('<span class="fact">'+esc(p.year)+' '+t('year')+'</span>');
+  return f.length ? '<div class="facts">'+f.join('')+'</div>' : '';
+}
+
+function cardHTML(p){
+  var c = condOf(p.cond), sv = savings(p);
+  var specs = trList(p.specs).slice(0,2).map(function(s){ return s[1]||s[0]; }).filter(Boolean).join(' · ');
+  var ph = p.photos && p.photos[0] ? '<img src="'+p.photos[0]+'" alt="">' : icon(p);
+  return '<a class="card '+esc(p.status)+'" href="#p-'+esc(p.id)+'" data-id="'+esc(p.id)+'">'+
+    '<div class="ph">'+ph+(c?'<span class="cond g-'+esc(p.cond)+'">'+esc(condTxt(c)[2])+'</span>':'')+(p.example?'<span class="ex">'+(lang==='ru'?'Пример':'Näidis')+'</span>':'')+(editing?'<span class="editmark">Изменить</span>':'')+'</div>'+
+    '<div class="body"><span class="sku">'+t('sku')+' '+esc(p.id)+' · '+esc(tr(p.cat))+'</span><h3>'+esc(tr(p.title))+'</h3>'+
+    (specs?'<span class="specs">'+esc(specs)+'</span>':'')+
+    factsHTML(p)+
+    '<div class="price-row"><span class="tag">'+money(p.price)+'</span>'+(sv?'<span class="newp">'+t('newApprox')+' '+money(p.newPrice)+'</span>':'')+
+    '<span class="st st-'+esc(p.status)+'">'+(t(p.status)||'')+'</span></div></div></a>';
+}
+
+function renderGrid(){
+  var list = visible(), total = state.products.length;
+  var g = $('#grid'), cnt = $('#count');
+  if (!total){
+    cnt.textContent = '';
+    g.innerHTML = '<div class="empty">'+(editing
+      ? '<p>Каталог пуст. Добавьте первый товар: фото, название и цену.</p><button type="button" class="btn primary" data-act="add">+ Добавить товар</button>'
+      : '<p>'+t('soon')+'</p>')+'</div>';
+    return;
+  }
+  cnt.textContent = list.length===total ? t('count')(total) : t('shown')+' '+list.length+' '+t('of')+' '+total;
+  if (!list.length){
+    g.innerHTML = '<div class="empty"><p>'+t('nothing')+(ui.q.trim()?t('forQuery')+' «'+esc(ui.q.trim())+'»':'')+'.</p><button type="button" class="btn" data-act="reset">'+t('reset')+'</button></div>';
+    return;
+  }
+  g.innerHTML = list.map(cardHTML).join('');
+}
+
+function renderInfo(){
+  var lines = trList(state.shop.info), steps = trList(state.shop.steps);
+  $('#info').innerHTML =
+    (steps.length ? '<div class="steps-wrap"><h2>'+t('stepsH')+'</h2><ol class="steps">'+steps.map(function(s,i){ return '<li><span class="num">'+(i+1)+'</span><span>'+esc(s)+'</span></li>'; }).join('')+'</ol></div>' : '')+
+    '<div class="info-grid"><div id="grades"><h2>'+t('gradesH')+'</h2><p class="lead">'+t('gradesLead')+'</p><ol class="scale">'+
+    CONDS.map(function(c){
+      var bars = ''; for (var i=1;i<=4;i++) bars += '<i class="'+(c[1] && i<=c[1] ? 'on':'')+'"></i>';
+      var x = condTxt(c);
+      return '<li><span class="lvl'+(c[1]?'':' svc')+'" aria-hidden="true">'+bars+'</span><b>'+esc(x[0])+'</b><span>'+esc(x[1])+'</span></li>';
+    }).join('')+'</ol></div>'+
+    '<div class="side-col">'+(services().length ? '<div id="services"><h2>'+t('svcH')+'</h2><dl class="pricelist">'+services().map(function(x){ return '<dt>'+esc(tr(x))+'</dt><dd>'+esc(svcPrice(x))+'</dd>'; }).join('')+'</dl></div>' : '')+
+    (lines.length ? '<div><h2>'+t('termsH')+'</h2><ul class="ticks">'+lines.map(function(l){ return '<li>'+esc(l)+'</li>'; }).join('')+'</ul></div>' : '')+'</div>'+
+  '</div>';
+  var d = '';
+  try { d = new Date(state.updated+'T12:00:00').toLocaleDateString(lang==='ru'?'ru-RU':'et-EE',{day:'numeric',month:'long',year:'numeric'}); } catch(e){}
+  var cur = state.shop.currency||'EUR';
+  $('#foot').innerHTML = '<span>'+esc(state.shop.name||'')+'</span>'+(hasTerms()?'<a href="#terms" data-act="terms">'+t('termsLink')+'</a>':'')+'<span>'+t('prices')+' '+esc((CURNAME[lang]||{})[cur]||cur)+'</span>'+(d?'<span>'+t('updated')+' '+esc(d)+'</span>':'');
+}
+
+function docSizeMB(){ return buildDocument(state).length/1048576; }
+
+function renderOwner(){
+  var tg = $('#editToggle');
+  tg.hidden = !canEdit;
+  tg.textContent = editing ? 'Как видит покупатель' : 'Редактировать';
+  $('#ownerWrap').hidden = !editing;
+  if (!editing) return;
+  var ex = state.products.filter(function(p){ return p.example; }).length;
+  var base = siteBase();
+  $('#owner').innerHTML =
+    '<div class="owner-actions"><button type="button" class="btn primary" data-act="add">+ Добавить товар</button>'+
+    '<button type="button" class="btn" data-act="settings">Настройки магазина</button>'+
+    (ex ? '<span id="exWrap"><button type="button" class="btn danger-ghost" data-act="clearex">Убрать примеры ('+ex+')</button></span>' : '')+'</div>'+
+    (base ? '<div class="owner-actions"><span class="owner-note">Ссылка для клиента:</span><button type="button" class="mini" data-copy="'+esc(base+'#et')+'" data-ok="Ссылка на эстонскую версию скопирована">на эстонском</button><button type="button" class="mini" data-copy="'+esc(base+'#ru')+'" data-ok="Ссылка на русскую версию скопирована">на русском</button></div>' : '')+
+    (hasTerms() && !state.shop.legalName ? '<p class="hint">В условиях продажи пока нет данных продавца. Впишите юр. название или имя (и рег. код, если есть фирма) в «Настройках магазина».</p>' : '')+
+    '<p class="owner-note">Нажмите на карточку, чтобы изменить товар. Эту панель видите только вы. <span class="meter">Размер витрины: '+docSizeMB().toFixed(1).replace('.',',')+' из 16 МБ</span></p>'+
+    (pending ? '<div class="pending"><span>Есть неопубликованные правки с прошлого раза.</span><button type="button" class="btn small primary" data-act="restore">Восстановить</button><button type="button" class="btn small" data-act="forget">Забыть</button></div>' : '');
+}
+
+function renderSavebar(){
+  var b = $('#savebar');
+  b.hidden = !dirty;
+  document.body.classList.toggle('has-save', dirty);
+  if (!dirty) return;
+  b.innerHTML = '<div class="wrap sb-in"><span>'+(saving?'Публикую…':'Изменения пока видите только вы')+'</span><span class="sp"></span>'+
+    '<button type="button" class="btn ghost-inv" data-act="discard"'+(saving?' disabled':'')+'>'+(discardArmed?'Точно отменить все правки?':'Отменить')+'</button>'+
+    '<button type="button" class="btn primary" data-act="publish"'+(saving?' disabled':'')+'>Опубликовать</button></div>';
+}
+
+/* ---------- terms ---------- */
+function hasTerms(){ return !!tr(state.shop.terms).trim(); }
+function sellerHTML(){
+  var s = state.shop, parts = [];
+  parts.push(esc(s.legalName || s.name || ''));
+  if (s.regCode) parts.push(t('regCode')+' '+esc(s.regCode));
+  if (s.address) parts.push(esc(s.address)); else if (s.city) parts.push(esc(s.city));
+  var c = [s.phone, s.email].filter(Boolean).map(esc).join(', ');
+  if (c) parts.push(c);
+  return '<p>'+parts.join('<br>')+'</p>';
+}
+function termsBody(){
+  var out = [], list = null;
+  function flush(){ if (list){ out.push('<ul>'+list.join('')+'</ul>'); list = null; } }
+  tr(state.shop.terms).split('\n').forEach(function(raw){
+    var l = raw.trim();
+    if (!l){ flush(); return; }
+    if (l === '{seller}'){ flush(); out.push(sellerHTML()); return; }
+    if (l === '{services}'){ flush(); var sv = services(); if (sv.length) out.push('<dl class="pricelist">'+sv.map(function(x){ return '<dt>'+esc(tr(x))+'</dt><dd>'+esc(svcPrice(x))+'</dd>'; }).join('')+'</dl>'); return; }
+    if (/^##\s+/.test(l)){ flush(); out.push('<h3>'+esc(l.replace(/^##\s+/,''))+'</h3>'); return; }
+    if (/^[-•]\s+/.test(l)){ (list = list || []).push('<li>'+esc(l.replace(/^[-•]\s+/,''))+'</li>'); return; }
+    flush(); out.push('<p>'+esc(l)+'</p>');
+  });
+  flush();
+  return out.join('');
+}
+function openTerms(){
+  var td = $('#td'), pd = $('#pd');
+  if (pd.open) pd.close();
+  td.setAttribute('aria-label', t('termsLink'));
+  td.innerHTML = '<div class="dlg"><div class="dlg-head"><h2>'+t('termsLink')+'</h2><button type="button" class="x" data-close aria-label="'+t('close')+'">×</button></div>'+
+    '<div class="dlg-body terms">'+termsBody()+'</div></div>';
+  if (!td.open) td.showModal();
+  if (location.hash !== '#terms') location.hash = 'terms';
+}
+
+/* ---------- product view ---------- */
+function productHTML(p){
+  var c = condOf(p.cond), cl = contactList(), sv = savings(p);
+  var tg = cl.filter(function(x){ return x.k==='tg'; })[0], wa = cl.filter(function(x){ return x.k==='wa'; })[0], fb = cl.filter(function(x){ return x.k==='fb'; })[0];
+  var others = cl.filter(function(x){ return x.k==='ph'||x.k==='em'||x.k==='mk'; });
+  var photos = p.photos||[], title = tr(p.title);
+  var gal = '<div class="gal-main" id="gmain">'+(photos.length ? '<img src="'+photos[0]+'" alt="'+esc(title)+'">' : icon(p))+'</div>'+
+    (photos.length>1 ? '<div class="thumbs">'+photos.map(function(src,i){ return '<button type="button" data-g="'+i+'" aria-current="'+(i===0)+'" aria-label="'+(i+1)+'"><img src="'+src+'" alt=""></button>'; }).join('')+'</div>' : '');
+  var specs = trList(p.specs).map(function(s){ return s[0] ? '<dt>'+esc(s[0])+'</dt><dd>'+esc(s[1])+'</dd>' : '<dd class="full">'+esc(s[1])+'</dd>'; }).join('');
+  var checks = (p.checks||[]).map(function(k){ return checkName(k); }).filter(Boolean).map(function(n){ return '<li>'+esc(n)+'</li>'; }).join('');
+  var desc = tr(p.desc), defects = tr(p.defects);
+  var buy;
+  if (p.status==='sold'){
+    buy = '<h3>'+t('soldH')+'</h3><p>'+t('soldP')+'«'+esc(tr(p.cat))+'».</p><div class="buy-btns"><button type="button" class="btn ink" data-act="gocat" data-v="'+esc(catKey(p))+'">'+t('soldBtn')+'</button></div>';
+  } else {
+    var msg = t('ask')(p), btns = '', first = true;
+    function b(href, label){ var h = '<a class="btn '+(first?'primary':'ink')+'" href="'+esc(href)+'" target="_blank" rel="noopener" data-copyalso="'+esc(msg)+'">'+label+'</a>'; first = false; return h; }
+    if (fb) btns += b(fb.href, t('fb'));
+    if (tg) btns += b(tg.href, t('tg'));
+    if (wa) btns += b('https://wa.me/'+wa.num+'?text='+encodeURIComponent(msg), t('wa'));
+    buy = '<h3>'+(p.status==='reserved' ? t('reservedH') : t('buyH'))+'</h3>'+
+      (btns ? '<div class="buy-btns">'+btns+'</div><p class="svc-line">'+t('msgHint')+'</p>' : (!others.length ? '<p>'+t('noContacts')+'</p>' : ''))+
+      '<div class="msg"><span class="sel">'+esc(msg)+'</span><button type="button" class="mini" data-copy="'+esc(msg)+'" data-ok="'+esc(t('msgCopied'))+'">'+t('copy')+'</button></div>'+
+      (others.length ? '<div class="contacts">'+others.map(contactChip).join('')+'</div>' : '')+
+      (hasTerms() ? '<p class="svc-line">'+t('agree')+'<a href="#terms" data-act="terms">'+t('agreeLink')+'</a>.</p>' : '')+
+      (services().length ? '<p class="svc-line">'+services().map(function(x){ return esc(tr(x))+': '+esc(svcPrice(x)); }).join(' · ')+'</p>' : '');
+  }
+  var base = siteBase();
+  var share = base ? '<button type="button" class="mini" data-copy="'+esc(base+'#p-'+p.id+'-'+lang)+'" data-ok="'+esc(t('linkCopied'))+'">'+t('link')+'</button>' : '';
+  var x = c ? condTxt(c) : null;
+  return '<div class="dlg"><div class="dlg-head"><span class="sku">'+t('sku')+' '+esc(p.id)+' · '+esc(tr(p.cat))+'</span>'+share+
+    (editing ? '<button type="button" class="mini" data-act="editfrom" data-v="'+esc(p.id)+'">Изменить</button>' : '')+
+    '<button type="button" class="x" data-close aria-label="'+t('close')+'">×</button></div>'+
+    '<div class="dlg-body pv"><div class="gal">'+gal+'</div><div class="pinfo">'+
+      '<h2 class="ptitle">'+esc(title)+'</h2>'+
+      '<div class="price-row big"><span class="tag">'+money(p.price)+'</span>'+
+        '<span class="st st-'+esc(p.status)+'">'+(t(p.status)||'')+(p.status==='in'&&p.qty>1?', '+p.qty+' '+t('qty'):'')+'</span></div>'+
+      (sv ? '<p class="savebox">'+t('saveA')+'<b>'+money(p.newPrice)+'</b>'+t('saveB')+money(sv.diff)+' ('+sv.pct+'%).</p>' : '')+
+      (p.example ? '<p class="exnote">'+t('example')+'</p>' : '')+
+      (x ? '<div class="condbox"><b>'+esc(x[2])+'</b><span>'+esc(x[1])+'</span><a href="#grades" data-go="grades">'+t('allGrades')+'</a></div>' : '')+
+      factsHTML(p)+
+      (checks ? '<div class="checkbox-list"><h3>'+t('checksH')+'</h3><ul class="ticks">'+checks+'</ul></div>' : '')+
+      (defects ? '<div class="defects"><h3>'+t('defectsH')+'</h3><p>'+esc(defects).replace(/\n/g,'<br>')+'</p></div>' : '')+
+      (specs ? '<dl class="spec">'+specs+'</dl>' : '')+
+      (desc ? '<p class="desc">'+esc(desc).replace(/\n/g,'<br>')+'</p>' : '')+
+      '<div class="buy">'+buy+'</div>'+
+    '</div></div></div>';
+}
+
+function openProduct(id){
+  var p = find(id); if (!p) return;
+  var pd = $('#pd');
+  pd.innerHTML = productHTML(p);
+  pd.dataset.id = id;
+  if (!pd.open) pd.showModal();
+  if (!new RegExp('^#p-'+id+'(-(et|ru))?$').test(location.hash)) location.hash = 'p-'+id;
+}
+function clearHash(){
+  if (!/^#p-/.test(location.hash)) return;
+  try { history.replaceState(null,'',location.pathname+location.search); } catch(e){ location.hash = ''; }
+}
+function route(){
+  var h = location.hash, pd = $('#pd');
+  var lm = h.match(/(?:^#|-)(et|ru)$/);
+  if (lm && lm[1]!==lang){ setLang(lm[1], true); }
+  var m = h.match(/^#p-([A-Za-z0-9]+?)(?:-(?:et|ru))?$/);
+  if (m && find(m[1])){ if (!(pd.open && pd.dataset.id===m[1])) openProduct(m[1]); }
+  else if (pd.open) pd.close();
+  var td = $('#td');
+  if (h==='#terms' && hasTerms()){ if (!td.open) openTerms(); }
+  else if (td.open) td.close();
+}
+function setLang(l, fromRoute){
+  if (l!=='et' && l!=='ru') return;
+  lang = l;
+  try { localStorage.setItem('tr-lang', l); } catch(e){}
+  renderAll();
+  var pd = $('#pd');
+  if (pd.open && pd.dataset.id && !fromRoute) pd.innerHTML = productHTML(find(pd.dataset.id));
+  var td = $('#td'); if (td.open) openTerms();
+}
+
+/* ---------- editor (owner, Russian UI) ---------- */
+function bi(base, label, et, ru, opts){
+  opts = opts || {};
+  function field(l, v){
+    var id = base+'-'+l, ph = opts['ph'+l] ? ' placeholder="'+esc(opts['ph'+l])+'"' : '';
+    var lab = '<span>'+label+' · <b class="lc">'+(l==='et'?'ET':'RU')+'</b></span>';
+    if (opts.area) return '<label class="f">'+lab+'<textarea id="'+id+'" rows="'+(opts.rows||3)+'"'+ph+'>'+esc(v)+'</textarea></label>';
+    return '<label class="f">'+lab+'<input type="text" id="'+id+'" value="'+esc(v)+'"'+ph+(opts.list?' list="'+opts.list+l+'"':'')+'></label>';
+  }
+  return '<div class="bi">'+field('et', et)+field('ru', ru)+'</div>';
+}
+function specsText(p, l){ return sideList(p.specs, l).map(function(s){ return s[0] ? s[0]+': '+s[1] : s[1]; }).join('\n'); }
+function trBar(scope){
+  return samp ? '<div class="trbar"><span>Заполните поле на одном языке, а второе оставьте пустым: Claude переведёт.</span><button type="button" class="btn small ink" data-act="translate" data-v="'+scope+'">Перевести пустые поля</button></div>'
+    : '<p class="owner-note">Заполните поля на эстонском и на русском. Если одно оставить пустым, покупатели увидят текст на другом языке.</p>';
+}
+
+function openEditor(id){
+  var base = id ? find(id) : null;
+  if (id && !base) return;
+  var cur = state.shop.currency||'EUR';
+  var cc = ui.cat!=='all' ? cats().filter(function(c){ return c.key===ui.cat; })[0] : null;
+  draft = base ? clone(base) : {id:null,title:{et:'',ru:''},cat:{et:cc?cc.et:'',ru:cc?cc.ru:''},price:'',newPrice:'',cond:'a',status:'in',qty:1,year:'',warranty:0,checks:['tested','clean'],defects:{et:'',ru:''},desc:{et:'',ru:''},specs:{et:[],ru:[]},photos:[]};
+  var p = draft;
+  var sel = function(name,opts,val){ return '<select id="'+name+'">'+opts.map(function(o){ return '<option value="'+o[0]+'"'+(o[0]===val?' selected':'')+'>'+o[1]+'</option>'; }).join('')+'</select>'; };
+  var cl = cats();
+  $('#ed').innerHTML = '<form class="dlg" id="edForm" novalidate>'+
+    '<div class="dlg-head"><h2>'+(id?'Изменить товар · арт. '+esc(id):'Новый товар')+'</h2><button type="button" class="x" data-close aria-label="Закрыть">×</button></div>'+
+    '<div class="dlg-body form">'+
+      '<div class="f"><span>Фото <small>первое станет обложкой</small></span><div class="photos" id="photos"></div>'+
+        '<label class="drop" id="drop"><input id="files" type="file" accept="image/*" multiple><span id="dropTxt">Добавить фото: нажмите или перетащите сюда</span></label></div>'+
+      trBar('ed')+
+      bi('f-title','Название',side(p.title,'et'),side(p.title,'ru'),{pheti:'',phet:'Bosch KGN39VLEB, No Frost, 203 cm',phru:'Bosch KGN39VLEB, No Frost, 203 см'})+
+      bi('f-cat','Категория',side(p.cat,'et'),side(p.cat,'ru'),{phet:'Külmikud',phru:'Холодильники',list:'catlist-'})+
+      '<datalist id="catlist-et">'+cl.map(function(c){ return c.et ? '<option value="'+esc(c.et)+'">' : ''; }).join('')+'</datalist>'+
+      '<datalist id="catlist-ru">'+cl.map(function(c){ return c.ru ? '<option value="'+esc(c.ru)+'">' : ''; }).join('')+'</datalist>'+
+      '<div class="row3">'+
+        '<label class="f"><span>Цена, '+esc(cur)+'</span><input type="number" id="f-price" min="0" step="1" inputmode="decimal" value="'+esc(p.price)+'"></label>'+
+        '<label class="f"><span>Цена такого же нового <small>покажет экономию</small></span><input type="number" id="f-new" min="0" step="1" inputmode="decimal" value="'+esc(p.newPrice)+'"></label>'+
+        '<label class="f"><span>Состояние</span>'+sel('f-cond',CONDS.map(function(c){ return [c[0],c[3][0]]; }),p.cond)+'</label>'+
+      '</div><div class="row3">'+
+        '<label class="f"><span>Год выпуска</span><input type="number" id="f-year" min="1980" max="2100" step="1" inputmode="numeric" value="'+esc(p.year)+'" placeholder="2020"></label>'+
+        '<label class="f"><span>Гарантия, мес <small>0 — не показывать</small></span><input type="number" id="f-war" min="0" max="60" step="1" inputmode="numeric" value="'+esc(p.warranty)+'"></label>'+
+        '<label class="f"><span>Статус</span>'+sel('f-status',[['in','В наличии'],['reserved','Забронирован'],['sold','Продан']],p.status)+'</label>'+
+        '<label class="f"><span>Количество</span><input type="number" id="f-qty" min="0" step="1" inputmode="numeric" value="'+esc(p.qty)+'"></label>'+
+      '</div>'+
+      '<fieldset class="f checks-edit"><legend>Что проверено</legend>'+CHECKS.map(function(c){
+        return '<label class="tog"><input type="checkbox" id="chk-'+c[0]+'"'+((p.checks||[]).indexOf(c[0])>=0?' checked':'')+'> '+c[2]+'</label>';
+      }).join('')+'</fieldset>'+
+      bi('f-def','Недостатки',side(p.defects,'et'),side(p.defects,'ru'),{area:true,rows:2,phet:'3 cm kriimustus parempoolsel küljel',phru:'Царапина 3 см на правой боковой стенке'})+
+      '<p class="owner-note">Честно описанные царапины и вмятины вызывают у покупателя больше доверия, чем идеальные фото.</p>'+
+      bi('f-specs','Характеристики',specsText(p,'et'),specsText(p,'ru'),{area:true,rows:4,phet:'Kõrgus: 203 cm',phru:'Высота: 203 см'})+
+      bi('f-desc','Описание',side(p.desc,'et'),side(p.desc,'ru'),{area:true,rows:3})+
+      '<p class="err" id="edErr" hidden></p>'+
+    '</div>'+
+    '<div class="dlg-foot">'+(id?'<span id="delWrap"><button type="button" class="btn danger-ghost" data-act="del">Удалить товар</button></span>':'')+
+      '<span class="sp"></span><button type="button" class="btn" data-close>Отмена</button><button type="submit" class="btn primary">'+(id?'Сохранить':'Добавить в каталог')+'</button></div>'+
+  '</form>';
+  renderPhotos();
+  $('#ed').showModal();
+}
+
+function renderPhotos(){
+  var box = $('#photos'); if (!box || !draft) return;
+  box.innerHTML = draft.photos.map(function(src,i){
+    return '<div class="pt"><img src="'+src+'" alt="Фото '+(i+1)+'"><div class="pt-act">'+
+      (i ? '<button type="button" data-ph="left" data-i="'+i+'" aria-label="Сделать раньше">←</button>' : '<span class="cover">обложка</span>')+
+      '<button type="button" data-ph="del" data-i="'+i+'" aria-label="Удалить фото">×</button></div></div>';
+  }).join('');
+  var tx = $('#dropTxt'); if (tx) tx.textContent = busyPhotos ? 'Обрабатываю фото…' : 'Добавить фото: нажмите или перетащите сюда';
+}
+
+function shrink(file){
+  return new Promise(function(res, rej){
+    var url = URL.createObjectURL(file), img = new Image();
+    img.onload = function(){
+      var max = 1100, w = img.naturalWidth, h = img.naturalHeight, k = Math.min(1, max/Math.max(w,h));
+      w = Math.max(1,Math.round(w*k)); h = Math.max(1,Math.round(h*k));
+      var cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+      var x = cv.getContext('2d'); x.fillStyle = '#ffffff'; x.fillRect(0,0,w,h); x.drawImage(img,0,0,w,h);
+      URL.revokeObjectURL(url);
+      res(cv.toDataURL('image/jpeg',0.8));
+    };
+    img.onerror = function(){ URL.revokeObjectURL(url); rej(new Error('bad image')); };
+    img.src = url;
+  });
+}
+function addFiles(files){
+  var arr = Array.prototype.filter.call(files||[], function(f){ return /^image\//.test(f.type) || /\.(jpe?g|png|webp|gif|avif)$/i.test(f.name); });
+  if (!arr.length || !draft) return;
+  var d = draft;
+  busyPhotos += arr.length; renderPhotos();
+  arr.reduce(function(chain,f){
+    return chain.then(function(){ return shrink(f).then(function(u){ if (draft===d){ d.photos.push(u); } }, function(){ toast('Не удалось открыть «'+f.name+'». Подойдут JPG, PNG или WebP.'); }); })
+      .then(function(){ busyPhotos--; if (draft===d) renderPhotos(); });
+  }, Promise.resolve());
+}
+
+function vv(id){ var el = $('#'+id); return el ? el.value : ''; }
+function biVal(base){ return {et: vv(base+'-et').trim(), ru: vv(base+'-ru').trim()}; }
+function parseSpecs(txt){
+  return txt.split('\n').map(function(l){ return l.trim(); }).filter(Boolean).map(function(l){
+    var i = l.indexOf(':'); return i>0 ? [l.slice(0,i).trim(), l.slice(i+1).trim()] : ['', l];
+  });
+}
+
+function saveDraft(){
+  var title = biVal('f-title'), price = parseFloat(String(vv('f-price')).replace(',','.'));
+  var err = $('#edErr');
+  if ((!title.et && !title.ru) || isNaN(price) || price < 0){ err.textContent = 'Укажите название (хотя бы на одном языке) и цену.'; err.hidden = false; return; }
+  if (busyPhotos){ err.textContent = 'Подождите, фото ещё обрабатываются.'; err.hidden = false; return; }
+  var np = parseFloat(String(vv('f-new')).replace(',','.')), q = parseInt(vv('f-qty'),10);
+  var yr = parseInt(vv('f-year'),10), war = parseInt(vv('f-war'),10);
+  var cat = biVal('f-cat'); if (!cat.et && !cat.ru) cat = {et:'Muu', ru:'Другое'};
+  draft.title = title;
+  draft.cat = cat;
+  draft.price = Math.round(price*100)/100;
+  draft.newPrice = isNaN(np) ? '' : Math.round(np*100)/100;
+  draft.cond = vv('f-cond'); draft.status = vv('f-status');
+  draft.qty = isNaN(q) ? 1 : Math.max(0,q);
+  draft.year = (yr>=1980 && yr<=2100) ? yr : '';
+  draft.warranty = isNaN(war) ? 0 : Math.max(0,war);
+  draft.checks = CHECKS.map(function(c){ return c[0]; }).filter(function(k){ var el = $('#chk-'+k); return el && el.checked; });
+  draft.defects = biVal('f-def');
+  draft.desc = biVal('f-desc');
+  draft.specs = {et: parseSpecs(vv('f-specs-et')), ru: parseSpecs(vv('f-specs-ru'))};
+  draft.example = false;
+  delete draft.oldPrice;
+  var isNew = !draft.id;
+  if (isNew){ draft.id = String(state.nextId++).padStart(4,'0'); state.products.push(draft); }
+  else { for (var i=0;i<state.products.length;i++) if (state.products[i].id===draft.id) state.products[i] = draft; }
+  draft = null;
+  $('#ed').close();
+  markDirty(); renderAll();
+  toast(isNew ? 'Товар добавлен. Нажмите «Опубликовать», чтобы его увидели покупатели' : 'Изменения сохранены в черновике');
+}
+
+/* ---------- settings ---------- */
+function openSettings(){
+  var s = state.shop;
+  function inp(id,label,val,type,ph,hint){ return '<label class="f"><span>'+label+(hint?' <small>'+hint+'</small>':'')+'</span><input type="'+(type||'text')+'" id="'+id+'" value="'+esc(val)+'"'+(ph?' placeholder="'+esc(ph)+'"':'')+'></label>'; }
+  var curs = ['EUR','USD','RUB','PLN'];
+  if (curs.indexOf(s.currency)<0) curs.push(s.currency);
+  $('#sd').innerHTML = '<form class="dlg" id="sdForm" novalidate>'+
+    '<div class="dlg-head"><h2>Настройки магазина</h2><button type="button" class="x" data-close aria-label="Закрыть">×</button></div>'+
+    '<div class="dlg-body form">'+
+      '<div class="row3">'+inp('s-name','Название магазина',s.name,'text','Kasutusring')+inp('s-city','Город',s.city,'text','','необязательно')+
+        '<label class="f"><span>Валюта</span><select id="s-cur">'+curs.map(function(c){ return '<option value="'+esc(c)+'"'+(c===s.currency?' selected':'')+'>'+esc(c)+'</option>'; }).join('')+'</select></label></div>'+
+      trBar('sd')+
+      bi('s-kick','Подпись над названием',side(s.kicker,'et'),side(s.kicker,'ru'))+
+      bi('s-slogan','Слоган',side(s.slogan,'et'),side(s.slogan,'ru'))+
+      bi('s-tag','Короткое описание',side(s.tagline,'et'),side(s.tagline,'ru'),{area:true,rows:2})+
+      '<p class="legend">Как с вами связаться</p>'+
+      '<div class="row3">'+inp('s-fb','Facebook Messenger',s.messenger,'text','facebook.com/вашастраница','ссылка на страницу или имя')+inp('s-tg','Telegram',s.telegram,'text','@username')+'</div>'+
+      '<div class="row3">'+inp('s-ph','Телефон',s.phone,'tel','+372 …')+inp('s-wa','WhatsApp',s.whatsapp,'tel','','необязательно')+inp('s-em','E-mail',s.email,'email','','необязательно')+'</div>'+
+      '<p class="legend">Доставка и услуги <small>пустая цена = «по договорённости»</small></p>'+
+      '<div id="svcRows">'+(s.services||[]).map(svcRow).join('')+'</div><div><button type="button" class="btn small" data-act="svc-add">+ Добавить услугу</button></div>'+
+      '<div class="row3">'+inp('s-mkn','Название маркетплейса',s.marketName,'text','')+inp('s-mku','Ссылка на ваш профиль там',s.marketUrl,'url','https://…')+'</div>'+
+      '<p class="legend">Ссылки</p>'+
+      inp('s-site','Ссылка на эту витрину',s.siteUrl,'url','https://claude.ai/…','скопируйте её через «Поделиться»; тогда появятся ссылки на каждый товар и на русскую версию')+
+      '<p class="legend">Данные продавца <small>для условий продажи</small></p>'+
+      '<div class="row3">'+inp('s-legal','Юр. название или имя',s.legalName,'text','Kasutusring OÜ')+inp('s-reg','Регистрационный код',s.regCode,'text','','если есть фирма')+inp('s-addr','Адрес',s.address,'text','','необязательно')+'</div>'+
+      '<p class="legend">Как вы готовите технику к продаже <small>по шагу на строку</small></p>'+
+      bi('s-steps','Шаги',sideList(s.steps,'et').join('\n'),sideList(s.steps,'ru').join('\n'),{area:true,rows:4})+
+      '<p class="legend">Условия <small>доставка, оплата, гарантия, по пункту на строку</small></p>'+
+      bi('s-info','Условия',sideList(s.info,'et').join('\n'),sideList(s.info,'ru').join('\n'),{area:true,rows:4})+
+      '<p class="legend">Условия продажи <small>«## » — заголовок, {seller} — данные продавца, {services} — доставка с ценами</small></p>'+
+      bi('s-terms','Текст',side(s.terms,'et'),side(s.terms,'ru'),{area:true,rows:12})+
+      '<p class="err" id="sdErr" hidden></p>'+
+    '</div>'+
+    '<div class="dlg-foot"><span class="sp"></span><button type="button" class="btn" data-close>Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>'+
+  '</form>';
+  $('#sd').showModal();
+}
+var svcN = 0;
+function svcRow(x){
+  var i = svcN++; x = x || {et:'',ru:'',price:''};
+  return '<div class="svc-row" data-i="'+i+'"><label class="f"><span>Услуга · <b class="lc">ET</b></span><input type="text" id="svc'+i+'-et" value="'+esc(x.et)+'" placeholder="Kohaletoimetamine Tartus"></label>'+
+    '<label class="f"><span>Услуга · <b class="lc">RU</b></span><input type="text" id="svc'+i+'-ru" value="'+esc(x.ru)+'" placeholder="Доставка по Тарту"></label>'+
+    '<label class="f price"><span>Цена</span><input type="number" min="0" step="1" inputmode="decimal" id="svc'+i+'-p" value="'+esc(x.price)+'"></label>'+
+    '<button type="button" class="x" data-act="svc-del" aria-label="Удалить услугу">×</button></div>';
+}
+function lines(txt){ return String(txt||'').split('\n').map(function(l){ return l.trim(); }).filter(Boolean); }
+function saveSettings(){
+  function f(id){ return vv(id).trim(); }
+  var err = $('#sdErr'), mku = f('s-mku'), site = f('s-site').replace(/#.*$/,'');
+  if ((mku && !okUrl(mku)) || (site && !okUrl(site))){ err.textContent = 'Ссылки должны начинаться с https://'; err.hidden = false; return; }
+  if (f('s-fb') && !normFb(f('s-fb'))){ err.textContent = 'Messenger: вставьте ссылку на страницу Facebook, например facebook.com/teinering.'; err.hidden = false; return; }
+  if (f('s-tg') && !normTg(f('s-tg'))){ err.textContent = 'Telegram: укажите имя пользователя, например @kasutusring.'; err.hidden = false; return; }
+  state.shop = Object.assign({}, state.shop, {
+    name: f('s-name') || 'Kasutusring', city: f('s-city'), currency: f('s-cur') || 'EUR',
+    kicker: biVal('s-kick'), slogan: biVal('s-slogan'), tagline: biVal('s-tag'),
+    services: Array.prototype.map.call(document.querySelectorAll('.svc-row'), function(r){ var i = r.dataset.i, pr = parseFloat(String(vv('svc'+i+'-p')).replace(',','.')); return {et:vv('svc'+i+'-et').trim(), ru:vv('svc'+i+'-ru').trim(), price:isNaN(pr)?'':pr}; }).filter(function(x){ return x.et || x.ru; }),
+    messenger: f('s-fb'), telegram: f('s-tg'), whatsapp: f('s-wa'), phone: f('s-ph'), email: f('s-em'),
+    marketName: f('s-mkn'), marketUrl: mku, siteUrl: site,
+    steps: {et: lines(vv('s-steps-et')), ru: lines(vv('s-steps-ru'))},
+    legalName: f('s-legal'), regCode: f('s-reg'), address: f('s-addr'),
+    terms: {et: vv('s-terms-et').trim(), ru: vv('s-terms-ru').trim()},
+    info: {et: lines(vv('s-info-et')), ru: lines(vv('s-info-ru'))}
+  });
+  $('#sd').close();
+  markDirty(); renderAll();
+  toast('Настройки сохранены в черновике');
+}
+
+/* ---------- translation (owner only) ---------- */
+var TR_FIELDS = { ed:['f-title','f-cat','f-def','f-specs','f-desc'], sd:['s-kick','s-slogan','s-tag','s-steps','s-info','s-terms'] };
+function autoTranslate(scope, btn){
+  if (!samp){ toast('Перевод здесь недоступен. Заполните оба языка вручную'); return; }
+  var items = [];
+  var bases = TR_FIELDS[scope].slice();
+  if (scope==='sd') Array.prototype.forEach.call(document.querySelectorAll('.svc-row'), function(r){ bases.push('svc'+r.dataset.i); });
+  bases.forEach(function(base){
+    var e = $('#'+base+'-et'), r = $('#'+base+'-ru'); if (!e || !r) return;
+    var ev = e.value.trim(), rv = r.value.trim();
+    if (ev && !rv) items.push({el:r, from:'Estonian', to:'Russian', text:e.value.trim()});
+    else if (rv && !ev) items.push({el:e, from:'Russian', to:'Estonian', text:r.value.trim()});
+  });
+  if (!items.length){ toast('Нечего переводить: заполните поле на одном языке, а второе оставьте пустым'); return; }
+  var prompt = 'You translate texts for the website of "'+(state.shop.name||'Kasutusring')+'", a shop in Estonia that sells used home appliances and tools. '+
+    'Translate each item from its "from" language into its "to" language. Rules: keep brand names, model names, numbers and units unchanged (but write units the way the target language does, e.g. "см" in Russian, "cm" in Estonian); keep every line break; a line written as "Name: value" stays in that form; keep lines starting with "## " and the placeholders {seller} and {services} exactly as they are; use natural, concise shop wording; Estonian must be correct standard Estonian. '+
+    'Reply with only a JSON array of the translated strings, one per item, in the same order.\n\n'+
+    JSON.stringify(items.map(function(i){ return {from:i.from, to:i.to, text:i.text}; }));
+  var old = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Перевожу…';
+  samp.json(prompt, {modelTier:'default'}).then(function(arr){
+    if (!Array.isArray(arr)) throw {code:'invalid_json'};
+    var n = 0;
+    items.forEach(function(it, i){ if (typeof arr[i]==='string' && arr[i].trim() && !it.el.value.trim()){ it.el.value = arr[i].trim(); n++; } });
+    toast(n ? 'Готово. Проверьте перевод и сохраните' : 'Перевод пришёл пустым. Попробуйте ещё раз');
+  }).catch(function(e){
+    var c = e && e.code;
+    if (['not_granted','sampling_disabled','not_declared','capability_disabled','capability_removed'].indexOf(c)>=0){
+      samp = null; toast('Перевод не разрешён. Заполните второй язык вручную');
+      Array.prototype.forEach.call(document.querySelectorAll('.trbar'), function(b){ b.hidden = true; });
+    }
+    else if (c==='rate_limited') toast('Слишком много запросов. Попробуйте через минуту');
+    else if (c==='cancelled') {}
+    else toast('Не получилось перевести. Попробуйте ещё раз');
+  }).then(function(){ btn.disabled = false; btn.textContent = old; });
+}
+
+/* ---------- saving ---------- */
+function safeJSON(o){ return JSON.stringify(o).replace(/</g,'\\u003c').replace(/[\u2028\u2029]/g,function(c){ return c.charCodeAt(0)===0x2028 ? '\\u2028' : '\\u2029'; }); }
+function buildDocument(s){
+  var SC = 'scr'+'ipt';
+  var css = $('#css').textContent, js = $('#app').textContent, fonts = $('#fonts').getAttribute('href');
+  return '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>'+RESET+'</style></head><body>'+
+    '<title>'+esc(s.shop.name||'Kasutusring')+'</title>\n<meta name="claude:viewport-fit-sides" content="cover">\n'+
+    '<link id="fonts" rel="stylesheet" href="'+esc(fonts)+'">\n<style id="css">'+css+'</style>\n<div id="root"></div>\n'+
+    '<'+SC+' type="application/json" id="store">'+safeJSON(s)+'</'+SC+'>\n<'+SC+' id="app">'+js+'</'+SC+'>\n</body></html>';
+}
+function markDirty(){ dirty = true; discardArmed = false; renderSavebar(); }
+
+function publish(){
+  if (saving) return;
+  if (!art){ toast('Опубликовать можно только из Claude, где открыта витрина'); return; }
+  var next = clone(state);
+  next.rev = (STORE.rev||0)+1;
+  next.updated = new Date().toISOString().slice(0,10);
+  var html = buildDocument(next);
+  if (html.length > 15.5*1048576){ toast('Витрина больше 16 МБ. Удалите часть фото и попробуйте снова'); return; }
+  try { sessionStorage.setItem(PKEY, JSON.stringify(next)); } catch(e){}
+  saving = true; renderSavebar();
+  art.publish(html).then(function(){ toast('Опубликовано'); }, function(e){
+    saving = false;
+    var c = e && e.code;
+    if (c==='conflict') toast('Витрина изменилась в другом окне. После обновления ваши правки можно будет восстановить');
+    else if (['not_writer','not_granted','not_declared','capability_disabled','capability_removed','consent_required'].indexOf(c)>=0){
+      canEdit = false; editing = false; toast('Эту витрину можно только просматривать'); renderAll();
+    }
+    else if (c==='too_large') toast('Витрина слишком большая. Удалите часть фото');
+    else if (c==='rate_limited') toast('Слишком часто. Подождите минуту и опубликуйте снова');
+    else toast('Не получилось опубликовать. Попробуйте ещё раз');
+    renderSavebar();
+  });
+}
+
+function loadPending(){
+  var raw = null;
+  try { raw = sessionStorage.getItem(PKEY); } catch(e){}
+  if (!raw) return;
+  try {
+    var p = JSON.parse(raw);
+    if (JSON.stringify(p) === JSON.stringify(STORE)) { sessionStorage.removeItem(PKEY); return; }
+    pending = p;
+  } catch(e){ try { sessionStorage.removeItem(PKEY); } catch(_){} }
+}
+
+/* ---------- toast & copy ---------- */
+var tt;
+function toast(m, sel){
+  var el = $('#toast');
+  var host = Array.prototype.slice.call(document.querySelectorAll('dialog[open]')).pop() || document.body;
+  if (el.parentNode !== host) host.appendChild(el);
+  el.innerHTML = '<span>'+esc(m)+'</span>'+(sel!=null ? '<input readonly id="toastSel" aria-label="'+esc(t('copy'))+'" value="'+esc(sel)+'">' : '');
+  el.classList.add('on');
+  if (sel!=null){ var i = $('#toastSel'); i.focus(); i.select(); }
+  clearTimeout(tt);
+  tt = setTimeout(function(){ el.classList.remove('on'); }, sel!=null ? 9000 : 3000);
+}
+function copy(text, ok){
+  var done = function(){ toast(ok || t('copied')); };
+  var fail = function(){ toast(t('manual'), text); };
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fail);
+    else fail();
+  } catch(e){ fail(); }
+}
+
+/* ---------- actions ---------- */
+function act(name, el){
+  switch(name){
+    case 'add': openEditor(null); break;
+    case 'settings': openSettings(); break;
+    case 'terms': openTerms(); break;
+    case 'translate': autoTranslate(el.dataset.v, el); break;
+    case 'editfrom': $('#pd').close(); openEditor(el.dataset.v); break;
+    case 'reset': ui = {q:'',cat:'all',sort:ui.sort,stock:false}; $('#q').value=''; $('#stock').checked=false; renderFilters(); renderGrid(); break;
+    case 'gocat': ui.cat = el.dataset.v; $('#pd').close(); renderFilters(); renderGrid(); $('#chips').scrollIntoView({block:'center'}); break;
+    case 'clearex':
+      var n = state.products.filter(function(p){ return p.example; }).length;
+      $('#exWrap').innerHTML = '<span style="font-size:14px">Удалить '+n+' '+plural(n,'пример','примера','примеров')+'?</span> <button type="button" class="btn small danger" data-act="clearex-yes">Удалить</button> <button type="button" class="btn small" data-act="clearex-no">Нет</button>';
+      break;
+    case 'clearex-yes': state.products = state.products.filter(function(p){ return !p.example; }); markDirty(); renderAll(); toast('Примеры убраны'); break;
+    case 'clearex-no': renderOwner(); break;
+    case 'del':
+      $('#delWrap').innerHTML = '<button type="button" class="btn danger" data-act="del-yes">Да, удалить</button> <button type="button" class="btn" data-act="del-no">Нет</button>';
+      break;
+    case 'del-no': $('#delWrap').innerHTML = '<button type="button" class="btn danger-ghost" data-act="del">Удалить товар</button>'; break;
+    case 'del-yes':
+      var id = draft && draft.id;
+      state.products = state.products.filter(function(p){ return p.id!==id; });
+      draft = null; $('#ed').close(); markDirty(); renderAll(); toast('Товар удалён из черновика');
+      break;
+    case 'publish': publish(); break;
+    case 'svc-add': $('#svcRows').insertAdjacentHTML('beforeend', svcRow()); break;
+    case 'svc-del': el.closest('.svc-row').remove(); break;
+    case 'discard':
+      if (!discardArmed){ discardArmed = true; renderSavebar(); break; }
+      state = clone(STORE); dirty = false; discardArmed = false; renderAll(); toast('Правки отменены');
+      break;
+    case 'restore':
+      state = clone(pending); state.rev = STORE.rev; state.updated = STORE.updated;
+      pending = null; try { sessionStorage.removeItem(PKEY); } catch(e){}
+      markDirty(); renderAll(); toast('Правки восстановлены. Проверьте и опубликуйте');
+      break;
+    case 'forget': pending = null; try { sessionStorage.removeItem(PKEY); } catch(e){} renderOwner(); break;
+  }
+}
+
+function bind(){
+  document.addEventListener('click', function(e){
+    var t0 = e.target, c;
+    if (t0.tagName === 'DIALOG' && (t0.id === 'pd' || t0.id === 'td')){ t0.close(); return; }
+    if ((c = t0.closest('[data-copyalso]'))){
+      try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(c.dataset.copyalso).then(function(){ toast(t('msgCopied')); }, function(){}); } catch(_){}
+      return;
+    }
+    if ((c = t0.closest('[data-copy]'))){ e.preventDefault(); copy(c.dataset.copy, c.dataset.ok); return; }
+    if ((c = t0.closest('[data-go]'))){ e.preventDefault(); var pd = $('#pd'); if (pd.open) pd.close(); var tgt = document.getElementById(c.dataset.go); if (tgt) tgt.scrollIntoView({block:'start'}); return; }
+    if ((c = t0.closest('[data-close]'))){ c.closest('dialog').close(); return; }
+    if ((c = t0.closest('[data-lang]'))){ setLang(c.dataset.lang); return; }
+    if ((c = t0.closest('[data-cat]'))){ ui.cat = c.dataset.cat; renderFilters(); renderGrid(); return; }
+    if ((c = t0.closest('[data-g]'))){
+      var p = find($('#pd').dataset.id), i = +c.dataset.g;
+      if (p && p.photos[i]){ $('#gmain').innerHTML = '<img src="'+p.photos[i]+'" alt="'+esc(tr(p.title))+'">';
+        Array.prototype.forEach.call(document.querySelectorAll('[data-g]'), function(b){ b.setAttribute('aria-current', String(b===c)); }); }
+      return;
+    }
+    if ((c = t0.closest('[data-ph]'))){
+      var k = +c.dataset.i;
+      if (c.dataset.ph==='del') draft.photos.splice(k,1);
+      else if (k>0){ var tmp = draft.photos[k-1]; draft.photos[k-1] = draft.photos[k]; draft.photos[k] = tmp; }
+      renderPhotos(); return;
+    }
+    if ((c = t0.closest('[data-act]'))){ act(c.dataset.act, c); return; }
+    if ((c = t0.closest('.card')) && editing){ e.preventDefault(); openEditor(c.dataset.id); return; }
+    if (t0.closest('#editToggle')){ editing = !editing; renderAll(); return; }
+  });
+  document.addEventListener('submit', function(e){
+    if (e.target.id==='edForm'){ e.preventDefault(); saveDraft(); }
+    else if (e.target.id==='sdForm'){ e.preventDefault(); saveSettings(); }
+  });
+  document.addEventListener('change', function(e){
+    var el = e.target;
+    if (el.id==='files'){ addFiles(el.files); el.value=''; }
+    else if (el.id==='stock'){ ui.stock = el.checked; renderGrid(); }
+    else if (el.id==='sort'){ ui.sort = el.value; renderGrid(); }
+  });
+  document.addEventListener('input', function(e){ if (e.target.id==='q'){ ui.q = e.target.value; renderGrid(); } });
+  document.addEventListener('dragover', function(e){ var d = e.target.closest && e.target.closest('#drop'); if (d){ e.preventDefault(); d.classList.add('over'); } });
+  document.addEventListener('dragleave', function(e){ var d = e.target.closest && e.target.closest('#drop'); if (d) d.classList.remove('over'); });
+  document.addEventListener('drop', function(e){ var d = e.target.closest && e.target.closest('#drop'); if (d){ e.preventDefault(); d.classList.remove('over'); addFiles(e.dataTransfer.files); } });
+  $('#pd').addEventListener('close', function(){ $('#pd').dataset.id = ''; clearHash(); });
+  $('#td').addEventListener('close', function(){ if (location.hash==='#terms'){ try { history.replaceState(null,'',location.pathname+location.search); } catch(e){ location.hash=''; } } });
+  $('#ed').addEventListener('close', function(){ draft = null; });
+  window.addEventListener('hashchange', route);
+}
+
+function connect(){
+  var c = window.claude;
+  if (!c || typeof c.use !== 'function') return;
+  Promise.all([c.use('user'), c.use('artifact')]).then(function(r){
+    var u = r[0]; art = r[1];
+    if (!u || !art) return;
+    return u.canEdit().then(function(ok){
+      if (!ok) return;
+      canEdit = true; loadPending();
+      if (pending) editing = true;
+      renderAll();
+      return c.use('sample').then(function(s){ samp = s || null; }, function(){});
+    });
+  }).catch(function(){});
+}
+
+buildShell(); bind(); renderAll(); route(); connect();
+})();
+</script>
+</body></html>
